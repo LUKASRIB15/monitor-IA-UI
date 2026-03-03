@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
+import { useAuthenticateStudentAccount } from "@/hooks/use-authenticate-student-account";
 
 const signInFormValidationSchema = z.object({
   email: z.string().email("Digite um email válido."),
@@ -26,6 +27,8 @@ export function SignInForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const authenticateStudentAccount = useAuthenticateStudentAccount();
+
   const {
     register,
     handleSubmit,
@@ -35,8 +38,7 @@ export function SignInForm({
   });
 
   async function handleSignIn(data: SignInFormData) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data);
+    await authenticateStudentAccount.execute(data);
   }
 
   return (
