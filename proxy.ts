@@ -13,6 +13,31 @@ const publicRoutes = [
 
 const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = "/sign-in";
 
+function isTokenExpired(token: string): boolean {
+  try {
+    const parts = token.split(".");
+
+    if (parts.length !== 3) return true;
+
+    const payload = parts[1];
+
+    const base64 = payload
+      .replace(/-/g, "+")
+      .replace(/_/g, "/")
+      .padEnd(payload.length + ((4 - (payload.length % 4)) % 4), "=");
+
+    const decoded = JSON.parse(atob(base64));
+
+    if (!decoded.exp) return true;
+
+    const now = Math.floor(Date.now() / 1000);
+
+    return decoded.exp < now;
+  } catch {
+    return true;
+  }
+}
+
 export function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const publicRoute = publicRoutes.find((route) => route.path === path);
@@ -37,14 +62,20 @@ export function proxy(request: NextRequest) {
   ) {
     const redirectUrl = request.nextUrl.clone();
 
-    redirectUrl.pathname = "/";
+    redirectUrl.pathname = "/my-rooms";
 
     return NextResponse.redirect(redirectUrl);
   }
 
   if (authAccessToken && !publicRoute) {
-    // Check expire timing of Access token
-    // and redirect to /auth
+    if (isTokenExpired(authAccessToken.value)) {
+      const redirectUrl = request.nextUrl.clone();
+
+      redirectUrl.pathname = "/sign-in";
+      const response = NextResponse.redirect(redirectUrl);
+      response.cookies.delete("access_token");
+      return response;
+    }
 
     return NextResponse.next();
   }

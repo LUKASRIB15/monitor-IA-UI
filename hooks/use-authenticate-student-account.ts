@@ -18,7 +18,7 @@ export const useAuthenticateStudentAccount = () => {
           ...student,
           role: "STUDENT",
         });
-        router.push("/");
+        router.push("/my-rooms");
       } else {
         const { statusCode } = result.error;
 
