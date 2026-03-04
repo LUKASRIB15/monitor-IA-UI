@@ -1,8 +1,10 @@
-import { SignInForm } from "@/components/sign-in-form";
-import { SignupForm } from "@/components/sign-up-form";
 import { ImageIcon, Sparkles } from "lucide-react";
 
-export default function SignUp() {
+export default function AuthLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="relative hidden bg-muted lg:block m-4 rounded-lg">
@@ -24,11 +26,7 @@ export default function SignUp() {
             Gen InstructorIA.
           </a>
         </div>
-        <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-xs">
-            <SignupForm />
-          </div>
-        </div>
+        {children}
       </div>
     </div>
   );

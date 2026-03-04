@@ -1,14 +1,14 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/button";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+} from "@/shared/components/field";
+import { Input } from "@/shared/components/input";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import z from "zod";
