@@ -1,12 +1,25 @@
 "use client";
 
 import { RoomCard } from "@/components/my-rooms/room-card";
+import { RoomCardSkeleton } from "@/components/my-rooms/room-card-skeleton";
 import { useFetchRooms } from "@/hooks/use-fetch-rooms";
 import { Button } from "@/shared/components/button";
 import { DoorOpen } from "lucide-react";
 
 export default function MyRooms() {
-  const { rooms } = useFetchRooms();
+  const { rooms, isFetchingRooms } = useFetchRooms();
+
+  if (isFetchingRooms) {
+    return (
+      <div className="h-full">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 px-6">
+          {Array.from([1, 2, 3, 4, 5, 6]).map((item) => (
+            <RoomCardSkeleton key={item} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full">
