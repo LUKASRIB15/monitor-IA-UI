@@ -14,7 +14,9 @@ import {
   Clock,
   MessageCircleCheck,
   MessageCircle,
+  MessageSquare,
 } from "lucide-react";
+import Link from "next/link";
 
 type Room = {
   id: string;
@@ -76,7 +78,7 @@ export function RoomCard({ data }: RoomCardProps) {
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <Calendar className="size-3.5" />
-            {formatRelativeDate(data.createdAt)}
+            Criado {formatRelativeDate(data.createdAt)}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <Clock className="size-3.5" />
@@ -86,14 +88,11 @@ export function RoomCard({ data }: RoomCardProps) {
       </CardContent>
 
       <CardFooter>
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full"
-          onClick={() => {}}
-        >
-          <MessageCircle />
-          Entrar na sala
+        <Button variant="outline" size="sm" className="w-full" asChild>
+          <Link href={`/my-rooms/${data.id}`}>
+            <MessageSquare />
+            Entrar na sala
+          </Link>
         </Button>
       </CardFooter>
     </Card>

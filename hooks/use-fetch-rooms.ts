@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { FetchRoomsQueryKeysEnum } from "./enums/fetch-rooms-query-keys";
+import { RoomsQueryKeysEnum } from "./enums/rooms-query-keys";
 import { fetchRoomsAction } from "@/app/actions/fetch-rooms";
 import { RoomDTO } from "@/app/actions/dtos/room-dto";
 
 export const useFetchRooms = () => {
   const query = useQuery({
-    queryKey: [FetchRoomsQueryKeysEnum.GET_ROOMS],
+    queryKey: [RoomsQueryKeysEnum.FETCH_ROOMS],
     queryFn: fetchRoomsAction,
   });
 
@@ -17,5 +17,6 @@ export const useFetchRooms = () => {
 
   return {
     rooms,
+    isFetchingRooms: query.isFetching,
   };
 };
