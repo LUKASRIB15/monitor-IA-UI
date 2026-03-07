@@ -7,15 +7,10 @@ import {
   CardFooter,
   CardAction,
 } from "@/shared/components/card";
+import { formatTime } from "@/utils/format-time";
+import { formatRelativeDate } from "@/utils/format-relative-date";
 import { Button } from "@/shared/components/button";
-import {
-  DoorOpen,
-  Calendar,
-  Clock,
-  MessageCircleCheck,
-  MessageCircle,
-  MessageSquare,
-} from "lucide-react";
+import { DoorOpen, Calendar, Clock, MessageSquare } from "lucide-react";
 import Link from "next/link";
 
 type Room = {
@@ -27,33 +22,6 @@ type Room = {
 
 interface RoomCardProps {
   data: Room;
-}
-
-function formatRelativeDate(dateString: string) {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMinutes = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffMinutes < 1) return "Agora mesmo";
-  if (diffMinutes < 60) return `${diffMinutes}min atr\u00e1s`;
-  if (diffHours < 24) return `${diffHours}h atr\u00e1s`;
-  if (diffDays < 7) return `${diffDays}d atr\u00e1s`;
-
-  return date.toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-function formatTime(dateString: string) {
-  return new Date(dateString).toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 }
 
 export function RoomCard({ data }: RoomCardProps) {
@@ -82,7 +50,7 @@ export function RoomCard({ data }: RoomCardProps) {
           </span>
           <span className="inline-flex items-center gap-1.5">
             <Clock className="size-3.5" />
-            {formatTime(data.createdAt)}
+            {formatTime(new Date(data.createdAt))}
           </span>
         </div>
       </CardContent>

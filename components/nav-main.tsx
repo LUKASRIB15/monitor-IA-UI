@@ -11,6 +11,7 @@ import {
 } from "@/shared/components/sidebar";
 import { useAuthStore } from "@/store/auth";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function NavMain({
   items,
@@ -22,6 +23,7 @@ export function NavMain({
   }[];
 }) {
   const { userLogged } = useAuthStore();
+  const pathname = usePathname();
 
   return (
     <SidebarGroup>
@@ -51,7 +53,10 @@ export function NavMain({
           {items.map((item) => (
             <Link key={item.title} href={item.url}>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  data-active={pathname.includes(item.url)}
+                >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </SidebarMenuButton>

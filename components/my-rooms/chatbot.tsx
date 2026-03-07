@@ -69,8 +69,6 @@ export function Chatbot({ room, chat }: ChatbotProps) {
       message: inputText,
     });
 
-    // setMessages((prev) => [...prev, newMessage]);
-    // setInput("");
     inputRef.current?.focus();
   }
 
@@ -97,9 +95,6 @@ export function Chatbot({ room, chat }: ChatbotProps) {
             <span className="text-sm font-semibold text-foreground leading-tight">
               {room.title}
             </span>
-            {/* <span className="text-xs text-muted-foreground">
-              {memberCount} {memberCount === 1 ? "membro" : "membros"} online
-            </span> */}
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -121,10 +116,15 @@ export function Chatbot({ room, chat }: ChatbotProps) {
         <ScrollArea ref={scrollRef} className="min-h-0 flex-1 px-5">
           <div className="flex min-h-full flex-col justify-end gap-4 py-4">
             {chat.messages.map((msg, index) => (
-              <MessageBubble key={index} message={msg} />
-              // <MessageBubble key={msg.id} message={msg} />
+              <div key={msg.id}>
+                {msg.content.length > 0 && (
+                  <MessageBubble key={index} message={msg} />
+                )}
+                {msg.role === "AI" && msg.content.length === 0 && (
+                  <MessageBubbleTyping />
+                )}
+              </div>
             ))}
-            {sendMessage.isExecuting && <MessageBubbleTyping />}
           </div>
         </ScrollArea>
       ) : (
