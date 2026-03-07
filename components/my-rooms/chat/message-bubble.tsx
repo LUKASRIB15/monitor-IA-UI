@@ -1,6 +1,5 @@
 import { MessageDTO } from "@/app/actions/dtos/message-dto";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback } from "@/shared/components/avatar";
 import { formatTime } from "@/utils/format-time";
 
 type MessageBubbleProps = {
@@ -17,25 +16,12 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         isStudent ? "flex-row-reverse" : "flex-row",
       )}
     >
-      {/* {!isStudent && (
-        <Avatar className="size-7">
-          <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
-            {message.senderName.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      )} */}
-
       <div
         className={cn(
           "flex max-w-[75%] flex-col gap-0.5",
           isStudent ? "items-end" : "items-start",
         )}
       >
-        {/* {!isStudent && (
-          <span className="px-1 text-xs font-medium text-muted-foreground">
-            {message.senderName}
-          </span>
-        )} */}
         <div
           className={cn(
             "rounded-2xl px-3.5 py-2 text-sm leading-relaxed",

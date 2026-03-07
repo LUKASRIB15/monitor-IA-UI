@@ -1,62 +1,35 @@
-"use server";
-
-import { cookies } from "next/headers";
-import type { MessageDTO } from "./dtos/message-dto";
-
-type SendMessageRequest = {
-  message: string;
+type SendMessageToAIRequest = {
   chatId: string;
+  message: string;
+  onChunk: (chunk: string) => void;
 };
 
-type SendMessageResponse =
-  | {
-      ok: false;
-      error: {
-        statusCode: number;
-      };
-    }
-  | {
-      ok: true;
-      message: MessageDTO;
-    };
-
-export async function sendMessageAction({
-  message,
+export async function sendMessageToAIAction({
   chatId,
-}: SendMessageRequest): Promise<SendMessageResponse> {
-  const appCookies = await cookies();
+  message,
+  onChunk,
+}: SendMessageToAIRequest) {
+  const url = `/api/send-message?chatId=${chatId}&message=${encodeURIComponent(message)}`;
 
-  const accessToken = appCookies.get("access_token")!.value;
+  const eventSource = new EventSource(url);
 
-  const response = await fetch(
-    `http://localhost:3333/chats/${chatId}/messages/new`,
-    {
+  let aiMessage = "";
+
+  eventSource.onmessage = (event) => {
+    const chunk = event.data;
+
+    aiMessage += chunk;
+    onChunk(chunk);
+  };
+
+  eventSource.onerror = async () => {
+    eventSource.close();
+    await fetch("/api/save-ai-message", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
-        message,
+        chatId,
+        content: aiMessage,
       }),
-    },
-  );
-
-  if (response.status === 404) {
-    const error404 = await response.json();
-
-    return {
-      ok: false,
-      error: {
-        statusCode: error404.statusCode,
-      },
-    };
-  }
-
-  const data = await response.json();
-
-  return {
-    ok: true,
-    message: data.message as MessageDTO,
+    });
   };
 }
