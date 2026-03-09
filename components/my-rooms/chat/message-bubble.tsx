@@ -1,6 +1,8 @@
 import { MessageDTO } from "@/app/actions/dtos/message-dto";
 import { cn } from "@/lib/utils";
 import { formatTime } from "@/utils/format-time";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type MessageBubbleProps = {
   message: MessageDTO;
@@ -30,7 +32,9 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               : "rounded-bl-md bg-muted text-foreground",
           )}
         >
-          {message.content}
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {message.content}
+          </ReactMarkdown>
         </div>
         <span className="px-1 text-[10px] text-muted-foreground/70">
           {formatTime(new Date(message.created_at))}
