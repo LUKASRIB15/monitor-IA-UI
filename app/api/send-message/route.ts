@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
+  const roomId = searchParams.get("roomId");
   const chatId = searchParams.get("chatId");
   const message = searchParams.get("message");
 
@@ -16,7 +17,7 @@ export async function GET(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const backendUrl = `http://localhost:3333/chats/${chatId}/messages/new?message=${encodeURIComponent(message)}`;
+  const backendUrl = `http://localhost:3333/rooms/${roomId}/chats/${chatId}/messages/new?message=${encodeURIComponent(message)}`;
 
   const response = await fetch(backendUrl, {
     method: "GET",
