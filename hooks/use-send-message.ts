@@ -53,6 +53,7 @@ export const useSendMessage = (roomId: string) => {
 
     try {
       await sendMessageToAIAction({
+        roomId,
         chatId,
         message,
         onChunk(chunk) {

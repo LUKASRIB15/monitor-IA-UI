@@ -1,15 +1,17 @@
 type SendMessageToAIRequest = {
+  roomId: string;
   chatId: string;
   message: string;
   onChunk: (chunk: string) => void;
 };
 
 export async function sendMessageToAIAction({
+  roomId,
   chatId,
   message,
   onChunk,
 }: SendMessageToAIRequest) {
-  const url = `/api/send-message?chatId=${chatId}&message=${encodeURIComponent(message)}`;
+  const url = `/api/send-message?roomId=${roomId}&chatId=${chatId}&message=${encodeURIComponent(message)}`;
 
   const eventSource = new EventSource(url);
 
