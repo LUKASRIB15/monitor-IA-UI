@@ -1,8 +1,8 @@
 "use client";
 
 import { Chatbot } from "@/components/my-rooms/chatbot";
-import { ChatBotSkeleton } from "@/components/my-rooms/chatbot-skeleton";
-import { useGetRoomWithChat } from "@/hooks/use-get-room-with-chat";
+import { RoomSettings } from "@/components/my-rooms/room-settings/room-settings";
+import { useAuthStore } from "@/store/auth";
 import { notFound, useParams } from "next/navigation";
 
 type ParamsProps = {
@@ -10,24 +10,20 @@ type ParamsProps = {
 };
 
 export default function Room() {
+  const { userLogged } = useAuthStore();
   const { id } = useParams<ParamsProps>();
-  const { room, chat, isLoadingData } = useGetRoomWithChat(id);
 
-  if (isLoadingData) {
-    return (
-      <div className="px-6 h-full">
-        <ChatBotSkeleton />
-      </div>
-    );
-  }
-
-  if (!room || !chat) {
+  if (!userLogged) {
     return notFound();
   }
 
   return (
     <div className="px-6 h-full">
-      <Chatbot room={room} chat={chat} />
+      {userLogged.role === "STUDENT" ? (
+        <Chatbot roomId={id} />
+      ) : (
+        <RoomSettings roomId={id} />
+      )}
     </div>
   );
 }

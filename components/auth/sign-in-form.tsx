@@ -7,6 +7,7 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLabel,
+  FieldSeparator,
 } from "@/shared/components/field";
 import { Input } from "@/shared/components/input";
 import Link from "next/link";
@@ -15,6 +16,7 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import { useAuthenticateStudentAccount } from "@/hooks/use-authenticate-student-account";
+import { CircleUserRound } from "lucide-react";
 
 const signInFormValidationSchema = z.object({
   email: z.string().email("Digite um email válido."),
@@ -112,7 +114,21 @@ export function SignInForm({
             )}
           </Button>
         </Field>
-        {/* <FieldSeparator>Or continue with</FieldSeparator> */}
+        <FieldDescription className="text-center">
+          Não tem uma conta?{" "}
+          <Link href="/sign-up" className="underline underline-offset-4">
+            Cadastrar-se
+          </Link>
+        </FieldDescription>
+        <FieldSeparator>Ou continue com</FieldSeparator>
+        <Field>
+          <Button asChild>
+            <Link href={"/monitor/sign-in"}>
+              <CircleUserRound />
+              Sou monitor
+            </Link>
+          </Button>
+        </Field>
         <Field>
           {/* <Button variant="outline" type="button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -123,12 +139,6 @@ export function SignInForm({
             </svg>
             Login with GitHub
           </Button> */}
-          <FieldDescription className="text-center">
-            Não tem uma conta?{" "}
-            <Link href="/sign-up" className="underline underline-offset-4">
-              Cadastrar-se
-            </Link>
-          </FieldDescription>
         </Field>
       </FieldGroup>
     </form>

@@ -9,6 +9,10 @@ const publicRoutes = [
     path: "/sign-up",
     whenAuthenticated: "redirect",
   },
+  {
+    path: "/monitor/sign-in",
+    whenAuthenticated: "redirect",
+  },
 ] as const;
 
 const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = "/sign-in";

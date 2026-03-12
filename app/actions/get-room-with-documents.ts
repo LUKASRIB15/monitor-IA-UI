@@ -1,14 +1,14 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { ChatWithMessagesDTO } from "./dtos/chat-with-messages-dto";
+import { DocumentDTO } from "./dtos/document-dto";
 import { RoomDTO } from "./dtos/room-dto";
 
-type GetRoomWithChatRequest = {
+type GetRoomWithDocumentsRequest = {
   roomId: string;
 };
 
-type GetRoomWithChatResponse =
+type GetRoomWithDocumentsResponse =
   | {
       ok: false;
       error: {
@@ -18,22 +18,25 @@ type GetRoomWithChatResponse =
   | {
       ok: true;
       room: RoomDTO;
-      chat: ChatWithMessagesDTO;
+      documents: DocumentDTO[];
     };
 
-export async function getRoomWithChatAction({
+export async function getRoomWithDocumentsAction({
   roomId,
-}: GetRoomWithChatRequest): Promise<GetRoomWithChatResponse> {
+}: GetRoomWithDocumentsRequest): Promise<GetRoomWithDocumentsResponse> {
   const appCookies = await cookies();
 
   const accessToken = appCookies.get("access_token")!.value;
 
-  const response = await fetch(`http://localhost:3333/rooms/${roomId}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+  const response = await fetch(
+    `http://localhost:3333/instructor/rooms/${roomId}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-  });
+  );
 
   if (response.status === 404) {
     const error404 = await response.json();
@@ -62,6 +65,6 @@ export async function getRoomWithChatAction({
   return {
     ok: true,
     room: data.room as RoomDTO,
-    chat: data.chat as ChatWithMessagesDTO,
+    documents: data.documents as DocumentDTO[],
   };
 }
