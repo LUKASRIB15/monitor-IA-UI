@@ -14,6 +14,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { EnterRoomDialog } from "./my-rooms/enter-room-dialog";
 import { useState } from "react";
+import { CreateRoomDialog } from "./my-rooms/create-room-dialog";
 
 export function NavMain({
   items,
@@ -24,7 +25,6 @@ export function NavMain({
     icon?: Icon;
   }[];
 }) {
-  const [isOpenEnterRoomDialog, setIsOpenEnterRoomDialog] = useState(false);
   const { userLogged } = useAuthStore();
   const pathname = usePathname();
 
@@ -37,7 +37,11 @@ export function NavMain({
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
-            <EnterRoomDialog />
+            {userLogged.role === "INSTRUCTOR" ? (
+              <CreateRoomDialog />
+            ) : (
+              <EnterRoomDialog />
+            )}
             {/* <Button
               size="icon"
               className="size-8 group-data-[collapsible=icon]:opacity-0"

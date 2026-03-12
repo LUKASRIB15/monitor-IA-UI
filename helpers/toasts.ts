@@ -24,4 +24,16 @@ function toastError(message: string) {
   });
 }
 
-export { toastWarning, toastError };
+function toastSuccess(message: string) {
+  toast(message, {
+    style: {
+      background: "#ECFDF5",
+      color: "#065F46",
+      border: "1px solid #A7F3D0",
+      borderLeft: "5px solid #10B981",
+      boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+    },
+  });
+}
+
+export { toastWarning, toastError, toastSuccess };

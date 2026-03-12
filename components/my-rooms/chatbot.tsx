@@ -11,8 +11,6 @@ import {
 } from "@/shared/components/tooltip";
 import { cn } from "@/lib/utils";
 import { SendHorizonal, SmilePlus, MessageSquare } from "lucide-react";
-import { RoomDTO } from "@/app/actions/dtos/room-dto";
-import { ChatWithMessagesDTO } from "@/app/actions/dtos/chat-with-messages-dto";
 import { EmptyChatBot } from "./empty-chatbot";
 import { MessageBubble } from "./chat/message-bubble";
 import { Controller, useForm } from "react-hook-form";
@@ -20,6 +18,9 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSendMessage } from "@/hooks/use-send-message";
 import { MessageBubbleTyping } from "./chat/message-bubble-typing";
+import { useGetRoomWithChat } from "@/hooks/use-get-room-with-chat";
+import { notFound, useRouter } from "next/navigation";
+import { ChatBotSkeleton } from "./chatbot-skeleton";
 
 const chatbotValidationSchema = z.object({
   inputText: z.string(),
@@ -28,12 +29,13 @@ const chatbotValidationSchema = z.object({
 type ChatBotData = z.infer<typeof chatbotValidationSchema>;
 
 type ChatbotProps = {
-  room: RoomDTO;
-  chat: ChatWithMessagesDTO;
+  roomId: string;
 };
 
-export function Chatbot({ room, chat }: ChatbotProps) {
-  const sendMessage = useSendMessage(room.id);
+export function Chatbot({ roomId }: ChatbotProps) {
+  const { room, chat, isLoadingData } = useGetRoomWithChat(roomId);
+
+  const sendMessage = useSendMessage(roomId);
   const { handleSubmit, control, watch, reset } = useForm<ChatBotData>({
     resolver: zodResolver(chatbotValidationSchema),
     defaultValues: {
@@ -56,16 +58,12 @@ export function Chatbot({ room, chat }: ChatbotProps) {
     }
   }, []);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [chat.messages, scrollToBottom]);
-
   async function handleSend(data: ChatBotData) {
     reset();
     const { inputText } = data;
 
     await sendMessage.execute({
-      chatId: chat.id,
+      chatId: chat!.id,
       message: inputText,
     });
 
@@ -77,6 +75,24 @@ export function Chatbot({ room, chat }: ChatbotProps) {
       e.preventDefault();
       handleSubmit(handleSend)();
     }
+  }
+
+  useEffect(() => {
+    if (!chat) return;
+
+    scrollToBottom();
+  }, [chat?.messages, scrollToBottom]);
+
+  if (isLoadingData) {
+    return (
+      <div className=" h-full">
+        <ChatBotSkeleton />
+      </div>
+    );
+  }
+
+  if (!room || !chat) {
+    return notFound();
   }
 
   return (

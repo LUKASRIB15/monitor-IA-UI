@@ -62,19 +62,11 @@ export function EnterRoomDialog() {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <SidebarMenuButton
-          tooltip={
-            userLogged!.role === "INSTRUCTOR"
-              ? "Criar sala"
-              : "Entrar em uma sala"
-          }
+          tooltip={"Entrar em uma sala"}
           className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
         >
           <IconCirclePlusFilled />
-          <span>
-            {userLogged!.role === "INSTRUCTOR"
-              ? "Criar sala"
-              : "Entrar em uma sala"}
-          </span>
+          <span>Entrar em uma sala</span>
         </SidebarMenuButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
