@@ -1,7 +1,3 @@
-"use server";
-
-import { cookies } from "next/headers";
-
 type SaveDocumentEmbeddingsRequest = {
   roomId: string;
   file: File;
@@ -16,26 +12,20 @@ type SaveDocumentEmbeddingsResponse =
     }
   | {
       ok: true;
+      documentInProgressId: string;
     };
 
 export async function saveDocumentEmbeddingsAction({
   roomId,
   file,
 }: SaveDocumentEmbeddingsRequest): Promise<SaveDocumentEmbeddingsResponse> {
-  const appCookies = await cookies();
-  const accessToken = appCookies.get("access_token")?.value;
-
   const formData = new FormData();
   formData.append("file", file);
 
   const response = await fetch(
-    `http://localhost:3333/rooms/${roomId}/document/save`,
+    `/api/save-document-embeddings?roomId=${roomId}`,
     {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-
       body: formData,
     },
   );
@@ -62,7 +52,10 @@ export async function saveDocumentEmbeddingsAction({
     };
   }
 
+  const data = await response.json();
+
   return {
     ok: true,
+    documentInProgressId: data.document_in_progress_id as string,
   };
 }

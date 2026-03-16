@@ -1,6 +1,7 @@
 "use client";
 
-import type { DocumentDTO } from "@/app/actions/dtos/document-dto";
+import { DocumentDTO } from "@/app/actions/dtos/document-dto";
+import { useGetDocumentInProgress } from "@/hooks/use-get-document-in-progress";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,17 +16,35 @@ import {
 import { Badge } from "@/shared/components/badge";
 import { Button } from "@/shared/components/button";
 import { Card, CardContent } from "@/shared/components/card";
+import { useDocumentInProgressStore } from "@/store/document-in-progress";
 import { formatBytes } from "@/utils/format-bytes";
 import { FileText, X } from "lucide-react";
+import { LoadingDocument } from "./loading-document";
+import { useEffect, useState } from "react";
 
 type DocumentCardProps = {
   document: DocumentDTO;
+  documentInProgressId: string;
   onDelete?: (id: string) => void;
 };
 
-export function DocumentCard({ document, onDelete }: DocumentCardProps) {
+export function DocumentCard({
+  document,
+  documentInProgressId,
+  onDelete,
+}: DocumentCardProps) {
+  const { activeDocumentId } = useDocumentInProgressStore();
+  useGetDocumentInProgress(documentInProgressId);
+
   return (
     <Card className="group relative transition-all hover:shadow-md">
+      {activeDocumentId.includes(documentInProgressId) && (
+        <LoadingDocument
+          key={documentInProgressId}
+          documentName={document.name}
+          progressId={documentInProgressId}
+        />
+      )}
       <CardContent className="flex items-center gap-4 p-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-destructive/10">
           <FileText className="h-6 w-6 text-destructive" />

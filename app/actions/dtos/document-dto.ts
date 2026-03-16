@@ -3,4 +3,5 @@ export type DocumentDTO = {
   name: string;
   size: number;
   created_at: Date;
+  progress_id: string;
 };

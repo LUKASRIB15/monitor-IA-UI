@@ -291,6 +291,7 @@ export function RoomSettings({
                   key={doc.id}
                   document={doc}
                   onDelete={onDeleteDocument}
+                  documentInProgressId={doc.progress_id}
                 />
               ))}
             </div>
