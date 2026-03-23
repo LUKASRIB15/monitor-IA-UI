@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSendMessage } from "@/hooks/use-send-message";
 import { MessageBubbleTyping } from "./chat/message-bubble-typing";
 import { useGetRoomWithChat } from "@/hooks/use-get-room-with-chat";
-import { notFound, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import { ChatBotSkeleton } from "./chatbot-skeleton";
 
 const chatbotValidationSchema = z.object({
@@ -33,7 +33,8 @@ type ChatbotProps = {
 };
 
 export function Chatbot({ roomId }: ChatbotProps) {
-  const { room, chat, isLoadingData } = useGetRoomWithChat(roomId);
+  const { room, chat, isLoadingData, isError, isFetching } =
+    useGetRoomWithChat(roomId);
 
   const sendMessage = useSendMessage(roomId);
   const { handleSubmit, control, watch, reset } = useForm<ChatBotData>({
@@ -83,10 +84,20 @@ export function Chatbot({ roomId }: ChatbotProps) {
     scrollToBottom();
   }, [chat?.messages, scrollToBottom]);
 
-  if (isLoadingData) {
+  if (isLoadingData || isFetching) {
     return (
       <div className=" h-full">
         <ChatBotSkeleton />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-sm text-muted-foreground">
+          Erro ao carregar a sala. Tente novamente.
+        </p>
       </div>
     );
   }

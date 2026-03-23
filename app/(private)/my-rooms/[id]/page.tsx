@@ -3,7 +3,7 @@
 import { Chatbot } from "@/components/my-rooms/chatbot";
 import { RoomSettings } from "@/components/my-rooms/room-settings/room-settings";
 import { useAuthStore } from "@/store/auth";
-import { notFound, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 type ParamsProps = {
   id: string;
@@ -14,7 +14,7 @@ export default function Room() {
   const { id } = useParams<ParamsProps>();
 
   if (!userLogged) {
-    return notFound();
+    return null;
   }
 
   return (

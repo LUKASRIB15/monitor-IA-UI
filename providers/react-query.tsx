@@ -1,12 +1,20 @@
 "use client";
 
+import { useGetUserAccount } from "@/hooks/use-get-user-account";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { ReactNode } from "react";
+import { ReactNode } from "react";
 
-const queryClient = new QueryClient();
+function UserAccountHydration() {
+  useGetUserAccount();
+  return null;
+}
 
 export function ReactQueryProvider({ children }: { children: ReactNode }) {
+  const queryClient = new QueryClient();
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserAccountHydration />
+      {children}
+    </QueryClientProvider>
   );
 }
