@@ -1,13 +1,12 @@
 import { create } from "zustand";
 
-type UserDTO = {
+export type UserDTO = {
   name: string;
   email: string;
   role: "STUDENT" | "INSTRUCTOR";
 };
 
 type AuthState = {
-  accessToken: string | null;
   userLogged: UserDTO | null;
   addUser: (data: UserDTO) => void;
   removeUser: () => void;
@@ -15,7 +14,6 @@ type AuthState = {
 
 export const useAuthStore = create<AuthState>((set) => {
   return {
-    accessToken: null,
     userLogged: null,
     addUser: (data: UserDTO) => {
       set({
@@ -24,7 +22,6 @@ export const useAuthStore = create<AuthState>((set) => {
     },
     removeUser: () => {
       set({
-        accessToken: null,
         userLogged: null,
       });
     },

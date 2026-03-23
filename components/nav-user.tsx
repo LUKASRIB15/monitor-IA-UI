@@ -29,9 +29,13 @@ import {
   useSidebar,
 } from "@/shared/components/sidebar";
 import { useAuthStore } from "@/store/auth";
+import { Button } from "@/shared/components/button";
+import { useSignOutAccount } from "@/hooks/use-sign-out-account";
+import { Profile } from "./user/profile";
 
 export function NavUser() {
   const { userLogged } = useAuthStore();
+  const signOutAccount = useSignOutAccount();
   const { isMobile } = useSidebar();
 
   if (!userLogged) {
@@ -84,10 +88,7 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconUserCircle />
-                Account
-              </DropdownMenuItem>
+              <Profile user={userLogged} />
               {/* <DropdownMenuItem>
                 <IconCreditCard />
                 Billing
@@ -98,7 +99,7 @@ export function NavUser() {
               </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => signOutAccount.execute()}>
               <IconLogout />
               Log out
             </DropdownMenuItem>
