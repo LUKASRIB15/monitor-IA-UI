@@ -10,7 +10,12 @@ import {
   TooltipTrigger,
 } from "@/shared/components/tooltip";
 import { cn } from "@/lib/utils";
-import { SendHorizonal, SmilePlus, MessageSquare } from "lucide-react";
+import {
+  SendHorizonal,
+  SmilePlus,
+  MessageSquare,
+  FileQuestionMark,
+} from "lucide-react";
 import { EmptyChatBot } from "./empty-chatbot";
 import { MessageBubble } from "./chat/message-bubble";
 import { Controller, useForm } from "react-hook-form";
@@ -19,7 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSendMessage } from "@/hooks/use-send-message";
 import { MessageBubbleTyping } from "./chat/message-bubble-typing";
 import { useGetRoomWithChat } from "@/hooks/use-get-room-with-chat";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { ChatBotSkeleton } from "./chatbot-skeleton";
 
 const chatbotValidationSchema = z.object({
@@ -37,6 +42,7 @@ export function Chatbot({ roomId }: ChatbotProps) {
     useGetRoomWithChat(roomId);
 
   const sendMessage = useSendMessage(roomId);
+  const route = useRouter();
   const { handleSubmit, control, watch, reset } = useForm<ChatBotData>({
     resolver: zodResolver(chatbotValidationSchema),
     defaultValues: {
@@ -125,14 +131,19 @@ export function Chatbot({ roomId }: ChatbotProps) {
           </div>
         </div>
         <div className="flex items-center gap-1">
-          {/* <Tooltip>
+          <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon-sm" aria-label="Ver membros">
-                <Users className="size-4 text-muted-foreground" />
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Ver membros"
+                onClick={() => route.push(`/my-rooms/${roomId}/quiz`)}
+              >
+                <FileQuestionMark className="size-4 text-muted-foreground" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Membros</TooltipContent>
-          </Tooltip> */}
+            <TooltipContent>Gerar quiz com IA</TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
