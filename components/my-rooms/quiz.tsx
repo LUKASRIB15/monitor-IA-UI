@@ -247,8 +247,8 @@ export function Quiz({ roomId, title, description, onComplete }: QuizProps) {
 
           <Progress value={progress} className="mb-4 h-2" />
 
-          <CardTitle className="text-xl">{title}</CardTitle>
-          {description && <CardDescription>{description}</CardDescription>}
+          {/* <CardTitle className="text-xl">{title}</CardTitle>
+          {description && <CardDescription>{description}</CardDescription>} */}
         </CardHeader>
 
         <CardContent className="space-y-4">

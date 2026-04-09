@@ -1,4 +1,5 @@
 export type QuizDTO = {
+  id: string;
   question: string;
   answer: string;
   options: string[];

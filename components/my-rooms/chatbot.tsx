@@ -15,6 +15,7 @@ import {
   SmilePlus,
   MessageSquare,
   FileQuestionMark,
+  CopyCheck,
 } from "lucide-react";
 import { EmptyChatBot } from "./empty-chatbot";
 import { MessageBubble } from "./chat/message-bubble";
@@ -136,7 +137,20 @@ export function Chatbot({ roomId }: ChatbotProps) {
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Ver membros"
+                aria-label="Gerar flash cards com IA"
+                onClick={() => route.push(`/my-rooms/${roomId}/flash-cards`)}
+              >
+                <CopyCheck className="size-4 text-muted-foreground" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Gerar flash cards com IA</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Gerar quiz com IA"
                 onClick={() => route.push(`/my-rooms/${roomId}/quiz`)}
               >
                 <FileQuestionMark className="size-4 text-muted-foreground" />
