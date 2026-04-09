@@ -1,18 +1,18 @@
 "use client";
 
-import { Quiz } from "@/components/my-rooms/quiz";
+import { FlashCards } from "@/components/my-rooms/flash-cards";
 import { useParams } from "next/navigation";
 
 type ParamsProps = {
   id: string;
 };
 
-export default function QuizPage() {
+export default function FlashCardsPage() {
   const { id } = useParams<ParamsProps>();
 
   return (
     <div>
-      <Quiz roomId={id} title="TextExample" />
+      <FlashCards roomId={id} />
     </div>
   );
 }
