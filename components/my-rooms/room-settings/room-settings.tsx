@@ -31,6 +31,8 @@ import { formatBytes } from "@/utils/format-bytes";
 import { DocumentCard } from "./document-card";
 import { RoomsQueryKeysEnum } from "@/hooks/enums/rooms-query-keys";
 import { useQueryClient } from "@tanstack/react-query";
+import { useFetchAllChatsByRoom } from "@/hooks/use-fetch-all-chats-by-room";
+import { ChatCard } from "./chat-card";
 
 interface RoomSettingsProps {
   roomId: string;
@@ -46,7 +48,14 @@ export function RoomSettings({
   onDeleteDocument,
 }: RoomSettingsProps) {
   const queryClient = useQueryClient();
-  const { room, documents, isLoadingData } = useGetRoomWithDocuments(roomId);
+  const {
+    room,
+    documents,
+    isLoadingData: isLoadingRoomData,
+  } = useGetRoomWithDocuments(roomId);
+  const { chats, isLoadingData: isLoadingChatsData } =
+    useFetchAllChatsByRoom(roomId);
+
   const saveDocumentEmbeddings = useSaveDocumentEmbeddings();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -102,7 +111,7 @@ export function RoomSettings({
     }
   };
 
-  if (isLoadingData) {
+  if (isLoadingRoomData || isLoadingChatsData) {
     return (
       <div className="h-full">
         <RoomSettingsSkeleton />
@@ -297,6 +306,25 @@ export function RoomSettings({
             </div>
           )}
         </div>
+        {chats && chats.length > 0 && (
+          <>
+            <Separator />
+
+            {/* Lista de Chats */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Conversas dos alunos</h3>
+                <Badge variant="outline">{chats.length} conversas</Badge>
+              </div>
+
+              <div className="space-y-3">
+                {chats.map((chat) => (
+                  <ChatCard key={chat.id} chat={chat} onClick={() => {}} />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );
