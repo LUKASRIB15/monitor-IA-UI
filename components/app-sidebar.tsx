@@ -162,9 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <a href="#">
                 <Sparkles className="size-5!" />
                 <div className="flex flex-col gap-0">
-                  <span className="text-base font-semibold">
-                    Gen InstructorIA.
-                  </span>
+                  <span className="text-base font-semibold">MonitorLM.</span>
                   {userLogged && (
                     <span className="text-xs text-muted-foreground">
                       {userLogged.role === "INSTRUCTOR"
