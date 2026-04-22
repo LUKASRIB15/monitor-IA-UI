@@ -1,6 +1,6 @@
 "use client";
 
-import { Chatbot } from "@/components/my-rooms/chatbot";
+import { StudentChatbot } from "@/components/my-rooms/student-chatbot";
 import { RoomSettings } from "@/components/my-rooms/room-settings/room-settings";
 import { useAuthStore } from "@/store/auth";
 import { useParams } from "next/navigation";
@@ -20,7 +20,7 @@ export default function Room() {
   return (
     <div className="px-6 h-full">
       {userLogged.role === "STUDENT" ? (
-        <Chatbot roomId={id} />
+        <StudentChatbot roomId={id} />
       ) : (
         <RoomSettings roomId={id} />
       )}

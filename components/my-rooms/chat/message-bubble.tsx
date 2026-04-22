@@ -1,37 +1,100 @@
 import { MessageDTO } from "@/app/actions/dtos/message-dto";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "@/shared/components/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/shared/components/tooltip";
 import { formatTime } from "@/utils/format-time";
+import { Bot, GraduationCap, UserRoundCog } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 
-type MessageBubbleProps = {
-  message: MessageDTO;
+const roleConfig: Record<
+  "AI" | "INSTRUCTOR" | "STUDENT",
+  {
+    label: string;
+    icon: React.ReactNode;
+    avatarClass: string;
+    bubbleClass: string;
+    align: "start" | "end";
+  }
+> = {
+  AI: {
+    label: "Assistente IA",
+    icon: <Bot className="size-4" />,
+    avatarClass:
+      "bg-violet-100 text-violet-600 dark:bg-violet-900 dark:text-violet-300",
+    bubbleClass: "bg-muted text-foreground",
+    align: "start",
+  },
+  STUDENT: {
+    label: "Você",
+    icon: <GraduationCap className="size-4" />,
+    avatarClass:
+      "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300",
+    bubbleClass: "bg-primary text-primary-foreground",
+    align: "end",
+  },
+  INSTRUCTOR: {
+    label: "Instrutor",
+    icon: <UserRoundCog className="size-4" />,
+    avatarClass:
+      "bg-emerald-100 text-emerald-600 dark:bg-emerald-900 dark:text-emerald-300",
+    bubbleClass:
+      "bg-emerald-50 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100 border border-emerald-200 dark:border-emerald-800",
+    align: "start",
+  },
 };
 
-export function MessageBubble({ message }: MessageBubbleProps) {
-  const isStudent = message.role === "STUDENT";
+type MessageBubbleProps = {
+  message: MessageDTO;
+  type?: "STUDENT" | "INSTRUCTOR";
+};
+
+export function MessageBubble({
+  message,
+  type = "STUDENT",
+}: MessageBubbleProps) {
+  const config = roleConfig[message.role];
+  const isUser = message.role === type;
 
   return (
     <div
       className={cn(
         "flex items-end gap-2",
-        isStudent ? "flex-row-reverse" : "flex-row",
+        isUser ? "flex-row-reverse" : "flex-row",
       )}
     >
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Avatar className={cn("size-8 shrink-0", config.avatarClass)}>
+            <AvatarFallback className={config.avatarClass}>
+              {config.icon}
+            </AvatarFallback>
+          </Avatar>
+        </TooltipTrigger>
+        <TooltipContent side={isUser ? "left" : "right"}>
+          {config.label}
+        </TooltipContent>
+      </Tooltip>
       <div
         className={cn(
-          "flex max-w-[75%] flex-col gap-0.5",
-          isStudent ? "items-end" : "items-start",
+          "flex max-w-[75%] gap-3",
+          isUser ? "items-end " : "items-start",
         )}
       >
         <div
           className={cn(
             "rounded-2xl px-3.5 py-2 text-sm leading-relaxed",
-            isStudent
-              ? "rounded-br-md bg-primary text-primary-foreground"
-              : "rounded-bl-md bg-muted text-foreground",
+            config.bubbleClass,
+            message.role === "STUDENT"
+              ? " bg-primary text-primary-foreground"
+              : " bg-muted text-foreground",
+            isUser ? "rounded-br-md" : "rounded-bl-md",
           )}
         >
           <ReactMarkdown
@@ -103,7 +166,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                   <code
                     className={cn(
                       "rounded px-1 py-0.5 font-mono text-xs",
-                      isStudent
+                      isUser
                         ? "bg-primary-foreground/20 text-primary-foreground"
                         : "bg-muted-foreground/15 text-foreground",
                     )}
@@ -119,7 +182,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                 <blockquote
                   className={cn(
                     "my-1.5 border-l-2 pl-3 italic",
-                    isStudent
+                    isUser
                       ? "border-primary-foreground/40"
                       : "border-muted-foreground/40",
                   )}
@@ -139,7 +202,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                 <hr
                   className={cn(
                     "my-2 border-t",
-                    isStudent
+                    isUser
                       ? "border-primary-foreground/20"
                       : "border-muted-foreground/20",
                   )}
@@ -150,9 +213,6 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             {message.content}
           </ReactMarkdown>
         </div>
-        <span className="px-1 text-[10px] text-muted-foreground/70">
-          {formatTime(new Date(message.created_at))}
-        </span>
       </div>
     </div>
   );
