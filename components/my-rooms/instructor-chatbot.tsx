@@ -27,6 +27,8 @@ import { MessageBubbleTyping } from "./chat/message-bubble-typing";
 import { useGetRoomWithChat } from "@/hooks/use-get-room-with-chat";
 import { notFound, useRouter } from "next/navigation";
 import { ChatBotSkeleton } from "./chatbot-skeleton";
+import { useGetChatByRoom } from "@/hooks/use-get-chat-by-room";
+import { useSendInstructorMessage } from "@/hooks/use-send-instructor-message";
 
 const chatbotValidationSchema = z.object({
   inputText: z.string(),
@@ -36,13 +38,20 @@ type ChatBotData = z.infer<typeof chatbotValidationSchema>;
 
 type ChatbotProps = {
   roomId: string;
+  chatId: string;
 };
 
-export function Chatbot({ roomId }: ChatbotProps) {
-  const { room, chat, isLoadingData, isError, isFetching } =
-    useGetRoomWithChat(roomId);
+export function InstructorChatbot({ roomId, chatId }: ChatbotProps) {
+  const { room_title, chat, isLoadingData, isError, isFetching } =
+    useGetChatByRoom({
+      roomId,
+      chatId,
+    });
 
-  const sendMessage = useSendMessage(roomId);
+  const sendMessage = useSendInstructorMessage({
+    roomId,
+    chatId,
+  });
   const route = useRouter();
   const { handleSubmit, control, watch, reset } = useForm<ChatBotData>({
     resolver: zodResolver(chatbotValidationSchema),
@@ -71,7 +80,7 @@ export function Chatbot({ roomId }: ChatbotProps) {
     const { inputText } = data;
 
     await sendMessage.execute({
-      chatId: chat!.id,
+      studentId: chat!.student.id,
       message: inputText,
     });
 
@@ -109,7 +118,7 @@ export function Chatbot({ roomId }: ChatbotProps) {
     );
   }
 
-  if (!room || !chat) {
+  if (!chat) {
     return notFound();
   }
 
@@ -127,37 +136,9 @@ export function Chatbot({ roomId }: ChatbotProps) {
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-foreground leading-tight">
-              {room.title}
+              {room_title} - {chat.student.name}
             </span>
           </div>
-        </div>
-        <div className="flex items-center gap-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label="Gerar flash cards com IA"
-                onClick={() => route.push(`/my-rooms/${roomId}/flash-cards`)}
-              >
-                <CopyCheck className="size-4 text-muted-foreground" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Gerar flash cards com IA</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label="Gerar quiz com IA"
-                onClick={() => route.push(`/my-rooms/${roomId}/quiz`)}
-              >
-                <FileQuestionMark className="size-4 text-muted-foreground" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Gerar quiz com IA</TooltipContent>
-          </Tooltip>
         </div>
       </div>
 
@@ -167,16 +148,21 @@ export function Chatbot({ roomId }: ChatbotProps) {
       {chat.messages.length > 0 ? (
         <ScrollArea ref={scrollRef} className="min-h-0 flex-1 px-5">
           <div className="flex min-h-full flex-col justify-end gap-4 py-4">
-            {chat.messages.map((msg, index) => (
-              <div key={msg.id}>
-                {msg.content.length > 0 && (
-                  <MessageBubble key={index} message={msg} />
-                )}
-                {msg.role === "AI" && msg.content.length === 0 && (
-                  <MessageBubbleTyping />
-                )}
-              </div>
-            ))}
+            {chat &&
+              chat.messages.map((msg, index) => (
+                <div key={msg.id}>
+                  {msg.content && msg.content.length > 0 && (
+                    <MessageBubble
+                      key={index}
+                      message={msg}
+                      type="INSTRUCTOR"
+                    />
+                  )}
+                  {msg.role === "AI" && msg.content.length === 0 && (
+                    <MessageBubbleTyping />
+                  )}
+                </div>
+              ))}
           </div>
         </ScrollArea>
       ) : (

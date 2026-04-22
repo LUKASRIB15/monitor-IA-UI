@@ -24,7 +24,7 @@ import {
 } from "@/shared/components/alert-dialog";
 import { Pencil, Trash2, FileText, Upload, X, Loader2 } from "lucide-react";
 import { useGetRoomWithDocuments } from "@/hooks/use-get-with-documents";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { RoomSettingsSkeleton } from "./room-settings-skeleton";
 import { useSaveDocumentEmbeddings } from "@/hooks/use-save-document-embeddings";
 import { formatBytes } from "@/utils/format-bytes";
@@ -47,6 +47,7 @@ export function RoomSettings({
   onDelete,
   onDeleteDocument,
 }: RoomSettingsProps) {
+  const route = useRouter();
   const queryClient = useQueryClient();
   const {
     room,
@@ -319,7 +320,13 @@ export function RoomSettings({
 
               <div className="space-y-3">
                 {chats.map((chat) => (
-                  <ChatCard key={chat.id} chat={chat} onClick={() => {}} />
+                  <ChatCard
+                    key={chat.id}
+                    chat={chat}
+                    onClick={() =>
+                      route.push(`/my-rooms/${roomId}/chats/${chat.id}`)
+                    }
+                  />
                 ))}
               </div>
             </div>
